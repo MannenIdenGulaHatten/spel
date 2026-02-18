@@ -5,11 +5,8 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 // cursor size
-const radius = 15;
+const radius = 5;
 
-// how much the room "moves" when you move the cursor
-const maxShiftX = 200;
-const maxShiftY = 200;
 
 let mouseX = canvas.width / 2;
 let mouseY = canvas.height / 2;
@@ -25,7 +22,7 @@ let currentY = mouseY;
 function drawCursor(x, y) {
   ctx.beginPath();
   ctx.arc(x, y, radius, 0, Math.PI * 2);
-  ctx.fillStyle = 'white';
+  ctx.fillStyle = 'black';
   ctx.fill();
 }
 
