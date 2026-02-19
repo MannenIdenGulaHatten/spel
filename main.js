@@ -29,8 +29,8 @@ function drawCursor(x, y) {
 function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  currentX += (mouseX - currentX) * 0.1;
-  currentY += (mouseY - currentY) * 0.1;
+  currentX += (mouseX - currentX) * 0.8;
+  currentY += (mouseY - currentY) * 0.8;
 
   drawCursor(currentX, currentY);
   requestAnimationFrame(animate);
