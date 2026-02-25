@@ -8,8 +8,9 @@ export function createCursor(canvas, ctx) {
   let currentY = mouseY;
 
   window.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX + window.scrollX;
-    mouseY = e.clientY + window.scrollY;
+    const rect = canvas.getBoundingClientRect();
+    mouseX = e.clientX - rect.left;
+    mouseY = e.clientY - rect.top;
   });
   
 

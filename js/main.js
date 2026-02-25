@@ -29,6 +29,16 @@ canvas.addEventListener('click', (e) => {
     }
 });
 
+function drawScore() {
+    ctx.save();
+    ctx.fillStyle = 'green';
+    ctx.font = '24px Arial';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText(`Score: ${score}`, 20, 20);
+    ctx.restore();
+  }
+
 // game loop
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -36,6 +46,7 @@ function animate() {
     targets.draw();
     cursor.update();
     cursor.draw();
+    drawScore(); 
 
     requestAnimationFrame(animate);
 }

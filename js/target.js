@@ -1,7 +1,7 @@
 export function createTargetSystem(canvas, ctx) {
   const targetTypes = [
     { size: 30, points: 10, src: 'images/larsonPrison.png' },
-    { size: 50, points: 5, src: 'images/larsonPrison.png' }
+    { size: 100, points: 5, src: 'images/yahu.jpg' }
   ];
 
   // preload images
