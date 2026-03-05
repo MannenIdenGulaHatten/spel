@@ -13,11 +13,34 @@ window.addEventListener('resize', resize);
 
 let score = 0;
 
+let selectedDifficulty = "Easy";
+
+const easyBtn = document.getElementById("easyBtn");
+const mediumBtn = document.getElementById("mediumBtn");
+const hardBtn = document.getElementById("hardBtn");
+
+const buttons = [easyBtn, mediumBtn, hardBtn];
+
+function setDifficulty(difficulty, button) {
+    selectedDifficulty = difficulty;
+    console.log("Selected difficulty:", selectedDifficulty);
+
+
+    buttons.forEach(btn => btn.classList.remove("selected"));
+
+
+    button.classList.add("selected");
+}
+
+easyBtn.addEventListener("click", () => setDifficulty("Easy", easyBtn));
+mediumBtn.addEventListener("click", () => setDifficulty("Medium", mediumBtn));
+hardBtn.addEventListener("click", () => setDifficulty("MEGA HARD", hardBtn));
+
 // create systems
 const cursor = createCursor(canvas, ctx);
 const targets = createTargetSystem(canvas, ctx);
 
-// spawn initial targets
+// spawn targets
 targets.spawn(5);
 
 // click handling
