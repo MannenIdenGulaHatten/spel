@@ -32,9 +32,20 @@ function setDifficulty(difficulty, button) {
     button.classList.add("selected");
 }
 
+
+
 easyBtn.addEventListener("click", () => setDifficulty("Easy", easyBtn));
 mediumBtn.addEventListener("click", () => setDifficulty("Medium", mediumBtn));
 hardBtn.addEventListener("click", () => setDifficulty("MEGA HARD", hardBtn));
+
+// difficulty item management.
+if (difficulty === "Easy") {
+  bombAmount = 0;
+} else if (difficulty === "Medium") {
+  bombAmount = 1;
+} else if (difficulty === "MEGA HARD") {
+  bombAmount = 2;
+}
 
 // create systems
 const cursor = createCursor(canvas, ctx);
