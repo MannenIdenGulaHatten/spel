@@ -1,9 +1,9 @@
 import { createCursor } from './cursor.js';
 import { createTargetSystem } from './target.js';
 
+// canvas
 const canvas = document.getElementById('menueCanvas');
 const ctx = canvas.getContext('2d');
-
 
 function resize() {
   canvas.width = window.innerWidth;
@@ -12,45 +12,20 @@ function resize() {
 resize();
 window.addEventListener('resize', resize);
 
-
-
+// score
 let score = 0;
 
-let selectedDifficulty = "Easy";
+// load difficulty
+const savedDifficulty = localStorage.getItem("difficulty") || "Easy";
+console.log("Loaded difficulty:", savedDifficulty);
 
-const easyBtn = document.getElementById("easyBtn");
-console.log("Easy button found:", easyBtn); //
-const mediumBtn = document.getElementById("mediumBtn");
-console.log("medium button found:", easyBtn); //
-const hardBtn = document.getElementById("hardBtn");
-console.log("hard button found:", easyBtn); //
-
-const buttons = [easyBtn, mediumBtn, hardBtn];
-
-function setDifficulty(difficulty, button) {
-    selectedDifficulty = difficulty;
-    console.log("Selected difficulty:", selectedDifficulty);
-
-
-    buttons.forEach(btn => btn.classList.remove("selected"));
-
-
-    button.classList.add("selected");
-}
-
-
-
-easyBtn.addEventListener("click", () => setDifficulty("Easy", easyBtn));
-mediumBtn.addEventListener("click", () => setDifficulty("Medium", mediumBtn));
-hardBtn.addEventListener("click", () => setDifficulty("MEGA HARD", hardBtn));
-
-// difficulty item management.
+// difficulty add bomb amount
 function getBombAmount() {
-  if (selectedDifficulty === "Easy") {
+  if (savedDifficulty === "Easy") {
     return 0;
-  } else if (selectedDifficulty === "Medium") {
+  } else if (savedDifficulty === "Medium") {
     return 1;
-  } else if (selectedDifficulty === "MEGA HARD") {
+  } else if (savedDifficulty === "MEGA HARD") {
     return 2;
   }
 }
@@ -66,44 +41,45 @@ targets.spawn(5);
 let correctClicks = 0;
 
 canvas.addEventListener('click', (e) => {
-    const result = targets.handleClick(e.clientX, e.clientY);
+  const result = targets.handleClick(e.clientX, e.clientY);
 
-    if (result !== null) {
-        score += result.points;
+  if (result !== null) {
+    score += result.points;
 
-        if (result.type === "target") {   // correct clicks = not bombs... so if not bomb 3 time reset bomb place so they dont stay stuck.
-            correctClicks++;
+    if (result.type === "target") {
+      correctClicks++;
 
-            if (correctClicks >= 3) {
-                targets.respawnBombs();
-                correctClicks = 0;
-            }
-        }
-
-        console.log("Score:", score);
+      if (correctClicks >= 3) {
+        targets.respawnBombs();
+        correctClicks = 0;
+      }
     }
+
+    console.log("Score:", score);
+  }
 });
 
+// draw score
 function drawScore() {
-    ctx.save();
-    ctx.fillStyle = 'green';
-    ctx.font = '24px Arial';
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'top';
-    ctx.fillText(`Score: ${score}`, 20, 20);
-    ctx.restore();
-  }
+  ctx.save();
+  ctx.fillStyle = 'green';
+  ctx.font = '24px Arial';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'top';
+  ctx.fillText(`Score: ${score}`, 20, 20);
+  ctx.restore();
+}
 
 // game loop
 function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    targets.draw();
-    cursor.update();
-    cursor.draw();
-    drawScore(); 
+  targets.draw();
+  cursor.update();
+  cursor.draw();
+  drawScore();
 
-    requestAnimationFrame(animate);
+  requestAnimationFrame(animate);
 }
 
 animate();
