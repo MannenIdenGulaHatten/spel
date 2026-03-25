@@ -2,67 +2,103 @@ export function createTargetSystem(canvas, ctx) {
 
   const targetTypes = [
     { size: 30, points: 10, src: 'images/larsonPrison.png', isBomb: false },
-    { size: 100, points: 5, src: 'images/yahu.jpg', isBomb: false },
-    { size: 40, points: -50, src: 'images/bombImage.png', isBomb: true } // bomb
+    { size: 100, points: 5, src: 'images/yahu.jpg', isBomb: false }
   ];
 
-  // preload images
-  targetTypes.forEach(t => {
+  const bombTypes = [
+    { size: 40, points: -50, src: 'images/bombImage.png', isBomb: true }
+  ];
+
+  // preload all images
+  [...targetTypes, ...bombTypes].forEach(t => {
     const img = new Image();
     img.src = t.src;
-    t.image = img; 
+    t.image = img;
   });
 
   const targets = [];
+  const bombs = [];
 
-  function spawn(count = 1) {
-    for (let i = 0; i < count; i++) {
+  function spawnTargets(count = 5) {
+    // always spawn exactly 'count' targets
+    while (targets.length < count) {
       const type = targetTypes[Math.floor(Math.random() * targetTypes.length)];
       targets.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
         size: type.size,
         points: type.points,
-        image: type.image, 
-        isBomb: type.isBomb
+        image: type.image,
+        isBomb: false
+      });
+    }
+  }
+
+  function spawnBombs(count = 0) {
+    // remove existing bombs
+    bombs.length = 0;
+
+    for (let i = 0; i < count; i++) {
+      const type = bombTypes[Math.floor(Math.random() * bombTypes.length)];
+      bombs.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: type.size,
+        points: type.points,
+        image: type.image,
+        isBomb: true
       });
     }
   }
 
   function draw() {
-    for (const t of targets) {
-      // skip if image not yet loaded
-      if (!t.image.complete) continue;
-
+    const allObjects = [...targets, ...bombs];
+    for (const t of allObjects) {
+      if (!t.image.complete) continue; // skip if image not loaded
       ctx.save();
       ctx.beginPath();
       ctx.arc(t.x, t.y, t.size, 0, Math.PI * 2);
       ctx.clip();
-
       ctx.drawImage(t.image, t.x - t.size, t.y - t.size, t.size * 2, t.size * 2);
       ctx.restore();
     }
   }
 
   function handleClick(x, y) {
+    // check targets first
     for (let i = targets.length - 1; i >= 0; i--) {
       const t = targets[i];
       if (Math.hypot(x - t.x, y - t.y) < t.size) {
         targets.splice(i, 1);
-        spawn(1); // replace clicked target
-        return { points: t.points, type: t.isBomb ? "bomb" : "target" };
+        spawnTargets(1); // replace clicked target
+        return { points: t.points, type: "target" };
       }
     }
+
+    // check bombs
+    for (let i = bombs.length - 1; i >= 0; i--) {
+      const b = bombs[i];
+      if (Math.hypot(x - b.x, y - b.y) < b.size) {
+        return { points: b.points, type: "bomb" };
+      }
+    }
+
     return 0;
   }
 
   function respawnBombs() {
-    // only move bomb targets
-    targets.filter(t => t.isBomb).forEach(b => {
+    // move bombs randomly
+    bombs.forEach(b => {
       b.x = Math.random() * canvas.width;
       b.y = Math.random() * canvas.height;
     });
   }
 
-  return { spawn, draw, handleClick, respawnBombs };
+  return { 
+    spawnTargets, 
+    spawnBombs, 
+    draw, 
+    handleClick, 
+    respawnBombs 
+  };
 }
