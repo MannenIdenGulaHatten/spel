@@ -57,6 +57,8 @@ canvas.addEventListener('click', (e) => {
     if (result.type === "target") {
       correctClicks++;
 
+      targets.spawnTargets(1);
+
       // every 3 correct clicks, respawn bombs
       if (correctClicks >= 3) {
         targets.respawnBombs();
