@@ -3,15 +3,15 @@ export function createTargetSystem(canvas, ctx) {
   const targetTypes = [
     { size: 30, points: 10, src: 'images/larsonPrison.png', isBomb: false },
     { size: 100, points: 5, src: 'images/yahu.jpg', isBomb: false },
-    { size: 40, points: -50, src: 'images/bombImage.png', isBomb: true } // bomben
+    { size: 40, points: -50, src: 'images/bombImage.png', isBomb: true } // bomb
   ];
 
   // preload images
   targetTypes.forEach(t => {
     const img = new Image();
-    img.onload = () => { 
-      t.loaded = true;
-  }});
+    img.src = t.src;
+    t.image = img; 
+  });
 
   const targets = [];
 
@@ -23,20 +23,23 @@ export function createTargetSystem(canvas, ctx) {
         y: Math.random() * canvas.height,
         size: type.size,
         points: type.points,
-        image: type.image
+        image: type.image, 
+        isBomb: type.isBomb
       });
     }
   }
 
   function draw() {
     for (const t of targets) {
+      // skip if image not yet loaded
+      if (!t.image.complete) continue;
+
       ctx.save();
       ctx.beginPath();
       ctx.arc(t.x, t.y, t.size, 0, Math.PI * 2);
       ctx.clip();
 
       ctx.drawImage(t.image, t.x - t.size, t.y - t.size, t.size * 2, t.size * 2);
-
       ctx.restore();
     }
   }
@@ -53,8 +56,9 @@ export function createTargetSystem(canvas, ctx) {
     return 0;
   }
 
-  function respawnBombs() { //spawnar om BOMBER
-    bombs.forEach(b => {
+  function respawnBombs() {
+    // only move bomb targets
+    targets.filter(t => t.isBomb).forEach(b => {
       b.x = Math.random() * canvas.width;
       b.y = Math.random() * canvas.height;
     });
