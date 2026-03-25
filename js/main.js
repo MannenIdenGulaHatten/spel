@@ -4,6 +4,7 @@ import { createTargetSystem } from './target.js';
 const canvas = document.getElementById('menueCanvas');
 const ctx = canvas.getContext('2d');
 
+
 function resize() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
@@ -11,13 +12,18 @@ function resize() {
 resize();
 window.addEventListener('resize', resize);
 
+
+
 let score = 0;
 
 let selectedDifficulty = "Easy";
 
 const easyBtn = document.getElementById("easyBtn");
+console.log("Easy button found:", easyBtn); //
 const mediumBtn = document.getElementById("mediumBtn");
+console.log("medium button found:", easyBtn); //
 const hardBtn = document.getElementById("hardBtn");
+console.log("hard button found:", easyBtn); //
 
 const buttons = [easyBtn, mediumBtn, hardBtn];
 
@@ -51,17 +57,30 @@ function getBombAmount() {
 
 // create systems
 const cursor = createCursor(canvas, ctx);
-const targets = createTargetSystem(canvas, ctx);
+const targets = createTargetSystem(canvas, ctx, getBombAmount());
 
 // spawn targets
 targets.spawn(5);
 
 // click handling
+let correctClicks = 0;
+
 canvas.addEventListener('click', (e) => {
-    const points = targets.handleClick(e.clientX, e.clientY);
-    if (points) {
-        score += points;
-        console.log('Score:', score);
+    const result = targets.handleClick(e.clientX, e.clientY);
+
+    if (result !== null) {
+        score += result.points;
+
+        if (result.type === "target") {   // correct clicks = not bombs... so if not bomb 3 time reset bomb place so they dont stay stuck.
+            correctClicks++;
+
+            if (correctClicks >= 3) {
+                targets.respawnBombs();
+                correctClicks = 0;
+            }
+        }
+
+        console.log("Score:", score);
     }
 });
 

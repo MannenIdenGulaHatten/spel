@@ -1,17 +1,17 @@
 export function createTargetSystem(canvas, ctx) {
 
   const targetTypes = [
-    { size: 30, points: 10, src: 'images/larsonPrison.png' },
-    { size: 100, points: 5, src: 'images/yahu.jpg' },
+    { size: 30, points: 10, src: 'images/larsonPrison.png', isBomb: false },
+    { size: 100, points: 5, src: 'images/yahu.jpg', isBomb: false },
     { size: 40, points: -50, src: 'images/bombImage.png', isBomb: true } // bomben
   ];
 
   // preload images
   targetTypes.forEach(t => {
     const img = new Image();
-    img.src = t.src;
-    t.image = img;
-  });
+    img.onload = () => { 
+      t.loaded = true;
+  }});
 
   const targets = [];
 
@@ -47,11 +47,18 @@ export function createTargetSystem(canvas, ctx) {
       if (Math.hypot(x - t.x, y - t.y) < t.size) {
         targets.splice(i, 1);
         spawn(1); // replace clicked target
-        return t.points;
+        return { points: t.points, type: t.isBomb ? "bomb" : "target" };
       }
     }
     return 0;
   }
 
-  return { spawn, draw, handleClick };
+  function respawnBombs() { //spawnar om BOMBER
+    bombs.forEach(b => {
+      b.x = Math.random() * canvas.width;
+      b.y = Math.random() * canvas.height;
+    });
+  }
+
+  return { spawn, draw, handleClick, respawnBombs };
 }
