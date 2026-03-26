@@ -70,7 +70,7 @@ export function createTargetSystem(canvas, ctx) {
       const t = targets[i];
       if (Math.hypot(x - t.x, y - t.y) < t.size) {
         targets.splice(i, 1);
-        spawnTargets(1); // replace clicked target
+        spawnTargets(5); // replace clicked target
         return { points: t.points, type: "target" };
       }
     }
