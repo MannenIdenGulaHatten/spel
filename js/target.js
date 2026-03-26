@@ -30,13 +30,24 @@ export function createTargetSystem(canvas, ctx) {
   }
 
   function spawnTargets(count = 5) {
+    let attempts = 0;
     // always spawn exactly 'count' targets
-    while (targets.length < count) {
+    while (targets.length < count && attempts < 100) {
+      attempts++;
       const type = targetTypes[Math.floor(Math.random() * targetTypes.length)];
       const padding = type.size;
+
+      const x = padding + Math.random() * (canvas.width - padding * 2);
+      const y = padding + Math.random() * (canvas.height - padding * 2);
+
+    // check against BOTH targets and bombs
+    if (isOverlapping(x, y, type.size, [...targets, ...bombs])) {
+      continue; // try again
+    }
+
       targets.push({
-        x: padding + Math.random() * (canvas.width - padding * 2),
-        y: padding + Math.random() * (canvas.height - padding * 2),
+        x,
+        y,
         size: type.size,
         points: type.points,
         image: type.image,
@@ -48,13 +59,24 @@ export function createTargetSystem(canvas, ctx) {
   function spawnBombs(count = 0) {
     // remove existing bombs
     bombs.length = 0;
+    let attempts = 0;
 
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < count && attempts < 100; i++) {
+      attempts++;
       const type = bombTypes[Math.floor(Math.random() * bombTypes.length)];
       const padding = type.size;
+
+      const x = padding + Math.random() * (canvas.width - padding * 2);
+      const y = padding + Math.random() * (canvas.height - padding * 2);
+
+      if (isOverlapping(x, y, type.size, [...targets, ...bombs])) {
+        i--; // retry this bomb
+        continue;
+      }
+
       bombs.push({
-        x: padding + Math.random() * (canvas.width - padding * 2),
-        y: padding + Math.random() * (canvas.height - padding * 2),
+        x,
+        y,
         size: type.size,
         points: type.points,
         image: type.image,
