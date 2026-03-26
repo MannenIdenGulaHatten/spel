@@ -69,7 +69,7 @@ export function createTargetSystem(canvas, ctx) {
       const x = padding + Math.random() * (canvas.width - padding * 2);
       const y = padding + Math.random() * (canvas.height - padding * 2);
 
-      if (isOverlapping(x, y, type.size, [...targets, ...bombs])) {
+      if (isOverlapping(x, y, type.size, [...targets, ...bombs])) { // ... = spread operator
         i--; // retry this bomb
         continue;
       }
