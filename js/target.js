@@ -19,6 +19,16 @@ export function createTargetSystem(canvas, ctx) {
   const targets = [];
   const bombs = [];
 
+  function isOverlapping(x, y, size, objects) { // function so that targets dont overlap
+    for (const obj of objects) {
+      const dist = Math.hypot(x - obj.x, y - obj.y);
+      if (dist < size + obj.size) {
+        return true; // overlap
+      }
+    }
+    return false;
+  }
+
   function spawnTargets(count = 5) {
     // always spawn exactly 'count' targets
     while (targets.length < count) {
