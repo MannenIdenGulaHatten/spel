@@ -23,9 +23,10 @@ export function createTargetSystem(canvas, ctx) {
     // always spawn exactly 'count' targets
     while (targets.length < count) {
       const type = targetTypes[Math.floor(Math.random() * targetTypes.length)];
+      const padding = type.size;
       targets.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
+        x: padding + Math.random() * (canvas.width - padding * 2),
+        y: padding + Math.random() * (canvas.height - padding * 2),
         size: type.size,
         points: type.points,
         image: type.image,
@@ -40,9 +41,10 @@ export function createTargetSystem(canvas, ctx) {
 
     for (let i = 0; i < count; i++) {
       const type = bombTypes[Math.floor(Math.random() * bombTypes.length)];
+      const padding = type.size;
       bombs.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
+        x: padding + Math.random() * (canvas.width - padding * 2),
+        y: padding + Math.random() * (canvas.height - padding * 2),
         size: type.size,
         points: type.points,
         image: type.image,
@@ -87,10 +89,10 @@ export function createTargetSystem(canvas, ctx) {
   }
 
   function respawnBombs() {
-    // move bombs randomly
     bombs.forEach(b => {
-      b.x = Math.random() * canvas.width;
-      b.y = Math.random() * canvas.height;
+      const padding = b.size;
+      b.x = padding + Math.random() * (canvas.width - padding * 2);
+      b.y = padding + Math.random() * (canvas.height - padding * 2);
     });
   }
 
