@@ -130,7 +130,7 @@ export function createTargetSystem(canvas, ctx) {
       if (Math.hypot(x - t.x, y - t.y) < t.size) {
         targets.splice(i, 1);
 
-        // spawn ONE replacement (not reset to 5)
+        // spawn ONE replacement 
         spawnTargets(targets.length + 1);
 
         return { points: t.points, type: "target" };
