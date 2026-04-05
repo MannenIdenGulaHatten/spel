@@ -5,6 +5,7 @@ body {
     height: 100%;
     overflow: hidden;
     background-color: aquamarine;
+    position:fixed;
 }
   
 canvas {
@@ -36,4 +37,24 @@ button:hover {
 .selected {
   background-color: green;
   color: white;
+}
+
+#startOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+#gameCanvas {
+  display: block;
 }

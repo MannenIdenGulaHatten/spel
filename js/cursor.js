@@ -8,9 +8,20 @@ export function createCursor(canvas, ctx) {
   let currentY = mouseY;
 
   window.addEventListener('mousemove', (e) => {
-    const rect = canvas.getBoundingClientRect();
-    mouseX = e.clientX - rect.left;
-    mouseY = e.clientY - rect.top;
+    if (document.pointerLockElement === canvas) {
+      // Pointer lock mode (relative movement) (where did mouse move)
+      mouseX += e.movementX;
+      mouseY += e.movementY;
+    } else {
+      // Normal mode (absolute position) (mouse position)
+      const rect = canvas.getBoundingClientRect();
+      mouseX = e.clientX - rect.left;
+      mouseY = e.clientY - rect.top;
+    }
+  
+    // keep cursor inside canvas
+    mouseX = Math.max(0, Math.min(canvas.width, mouseX));
+    mouseY = Math.max(0, Math.min(canvas.height, mouseY));
   });
   
 

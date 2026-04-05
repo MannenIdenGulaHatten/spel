@@ -1,5 +1,7 @@
 let selectedDifficulty = "Easy";
 
+
+
 const easyBtn = document.getElementById("easyBtn");
 const mediumBtn = document.getElementById("mediumBtn");
 const hardBtn = document.getElementById("hardBtn");
