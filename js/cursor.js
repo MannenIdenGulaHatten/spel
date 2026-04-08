@@ -1,5 +1,5 @@
 export function createCursor(canvas, ctx) {
-  const radius = 5;
+  const radius = 16; // controls size of image
   const lerpSpeed = 0.8;
 
   let mouseX = canvas.width / 2;
@@ -7,29 +7,29 @@ export function createCursor(canvas, ctx) {
   let currentX = mouseX;
   let currentY = mouseY;
 
+  // Load image
+  const img = new Image();
+  img.src = "images/cursorimage.png";
+
   window.addEventListener('mousemove', (e) => {
     if (document.pointerLockElement === canvas) {
-      // Pointer lock mode (relative movement) (where did mouse move)
       mouseX += e.movementX;
       mouseY += e.movementY;
     } else {
-      // Normal mode (absolute position) (mouse position)
       const rect = canvas.getBoundingClientRect();
       mouseX = e.clientX - rect.left;
       mouseY = e.clientY - rect.top;
     }
-  
-    // keep cursor inside canvas
+
+    // Clamp inside canvas
     mouseX = Math.max(0, Math.min(canvas.width, mouseX));
     mouseY = Math.max(0, Math.min(canvas.height, mouseY));
   });
-  
 
   window.addEventListener('mousedown', () => {
     currentX = mouseX;
     currentY = mouseY;
   });
-  
 
   function update() {
     currentX += (mouseX - currentX) * lerpSpeed;
@@ -37,10 +37,15 @@ export function createCursor(canvas, ctx) {
   }
 
   function draw() {
-    ctx.beginPath();
-    ctx.arc(currentX, currentY, radius, 0, Math.PI * 2);
-    ctx.fillStyle = 'black';
-    ctx.fill();
+    if (!img.complete) return; // wait for image
+
+    ctx.drawImage(
+      img,
+      currentX - radius,
+      currentY - radius,
+      radius * 2,
+      radius * 2
+    );
   }
 
   return { update, draw };
