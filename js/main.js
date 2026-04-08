@@ -3,7 +3,17 @@ import { createTargetSystem } from './target.js';
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
+
+const finalScoreText = document.getElementById("finalScore");
+const restartBtn = document.getElementById("restartBtn");
+const menuBtn = document.getElementById("menuBtn");
 const overlay = document.getElementById("startOverlay");
+const endOverlay = document.getElementById("endOverlay");
+
+
+document.addEventListener("pointerlockchange", () => {
+  console.log("Pointer locked to:", document.pointerLockElement);
+}); //Debug
 
 // ---------------------------
 // Resize canvas
@@ -19,20 +29,30 @@ window.addEventListener('resize', resize);
 // ---------------------------
 // Timer
 // ---------------------------
-let gameDuration = 30; // seconds
+let gameDuration = 5; // seconds
 let timeLeft = gameDuration;
 let gameRunning = false;
+let timerInterval;
 
 function startTimer() {
-  const timerInterval = setInterval(() => {
+  clearInterval(timerInterval);
+
+  timeLeft = gameDuration; //
+
+  timerInterval = setInterval(() => {
     timeLeft--;
 
-    if (timeLeft <= 0) {
+    if (timeLeft < 0) {
+      timeLeft = 0;
+    }
+
+    if (timeLeft === 0) {
       clearInterval(timerInterval);
       endGame();
     }
   }, 1000);
 }
+
 
 function drawTimer() {
   ctx.save();
@@ -54,9 +74,9 @@ function enterFullscreen() {
 }
 
 function lockPointer() {
-  if (canvas.requestPointerLock) {
-    canvas.requestPointerLock();
-  }
+  if (document.pointerLockElement === canvas) return;
+
+  canvas.requestPointerLock?.();
 }
 
 // ---------------------------
@@ -79,13 +99,14 @@ const cursor = createCursor(canvas, ctx);
 // ---------------------------
 overlay.addEventListener("click", startGame, { once: true });
 
+
 function startGame() {
   enterFullscreen();
-  lockPointer();
 
   overlay.style.display = "none";
 
-  // spawn targets
+  gameRunning = true;
+
   targets.spawnTargets(5);
 
   let bombCount = 0;
@@ -95,6 +116,10 @@ function startGame() {
   targets.spawnBombs(bombCount);
 
   startTimer();
+
+  // viktigt tydligen
+  canvas.requestPointerLock();
+
   animate(); 
 }
 
@@ -102,7 +127,8 @@ function startGame() {
 // Click handling
 // ---------------------------
 canvas.addEventListener('click', (e) => {
-  const result = targets.handleClick(e.clientX, e.clientY);
+  const pos = cursor.getPosition();
+  const result = targets.handleClick(pos.x, pos.y);
 
   if (result && result !== 0) {
     score += result.points;
@@ -138,19 +164,35 @@ function drawScore() {
 // ---------------------------
 
 function endGame() {
+  console.log("END GAME CALLED"); // debugger
   gameRunning = false;
 
-  console.log("Game Over! Final Score:", score);
+  clearInterval(timerInterval);
 
-  setTimeout(() => {
-    window.location.href = "index.html";
-  }, 2000); // 2 seconds
+  finalScoreText.textContent = `Score: ${score}`;
+
+  endOverlay.style.display = "flex";
+
+  requestAnimationFrame(() => {
+    endOverlay.classList.add("show");
+  });
+
+  document.exitPointerLock();
 }
+
+restartBtn.addEventListener("click", () => {
+  location.reload();
+});
+
+menuBtn.addEventListener("click", () => {
+  window.location.href = "index.html";
+});
 
 // ---------------------------
 // Game loop
 // ---------------------------
 function animate() {
+
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   targets.draw();
