@@ -15,6 +15,34 @@ function resize() {
 resize();
 window.addEventListener('resize', resize);
 
+
+// ---------------------------
+// Timer
+// ---------------------------
+let gameDuration = 30; // seconds
+let timeLeft = gameDuration;
+let gameRunning = false;
+
+function startTimer() {
+  const timerInterval = setInterval(() => {
+    timeLeft--;
+
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      endGame();
+    }
+  }, 1000);
+}
+
+function drawTimer() {
+  ctx.save();
+  ctx.fillStyle = 'red';
+  ctx.font = '28px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText(`Time: ${timeLeft}`, canvas.width / 2, 30);
+  ctx.restore();
+}
+
 // ---------------------------
 // Fullscreen + pointer lock
 // ---------------------------
@@ -66,6 +94,7 @@ function startGame() {
 
   targets.spawnBombs(bombCount);
 
+  startTimer();
   animate(); 
 }
 
@@ -105,6 +134,20 @@ function drawScore() {
 }
 
 // ---------------------------
+// End game
+// ---------------------------
+
+function endGame() {
+  gameRunning = false;
+
+  console.log("Game Over! Final Score:", score);
+
+  setTimeout(() => {
+    window.location.href = "index.html";
+  }, 2000); // 2 seconds
+}
+
+// ---------------------------
 // Game loop
 // ---------------------------
 function animate() {
@@ -113,7 +156,9 @@ function animate() {
   targets.draw();
   cursor.update();
   cursor.draw();
+
   drawScore();
+  drawTimer();
 
   requestAnimationFrame(animate);
 }
