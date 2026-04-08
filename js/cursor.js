@@ -1,21 +1,27 @@
 export function createCursor(canvas, ctx) {
-  const radius = 16; // controls size of image
-  const lerpSpeed = 0.8;
+  const radius = 16;
+  const lerpSpeed = 0.1; // smoother than 0.8
 
+  // Logical mouse position (target)
   let mouseX = canvas.width / 2;
   let mouseY = canvas.height / 2;
+
+  // Rendered cursor position (smoothed)
   let currentX = mouseX;
   let currentY = mouseY;
 
-  // Load image
+  // Load cursor image
   const img = new Image();
   img.src = "images/cursorimage.png";
 
+  // Mouse movement handler
   window.addEventListener('mousemove', (e) => {
     if (document.pointerLockElement === canvas) {
+      // Pointer lock mode (FPS-style)
       mouseX += e.movementX;
       mouseY += e.movementY;
     } else {
+      // Normal mode
       const rect = canvas.getBoundingClientRect();
       mouseX = e.clientX - rect.left;
       mouseY = e.clientY - rect.top;
@@ -26,18 +32,15 @@ export function createCursor(canvas, ctx) {
     mouseY = Math.max(0, Math.min(canvas.height, mouseY));
   });
 
-  window.addEventListener('mousedown', () => {
-    currentX = mouseX;
-    currentY = mouseY;
-  });
-
+  // Update smooth cursor position
   function update() {
     currentX += (mouseX - currentX) * lerpSpeed;
     currentY += (mouseY - currentY) * lerpSpeed;
   }
 
+  // Draw cursor
   function draw() {
-    if (!img.complete) return; // wait for image
+    if (!img.complete) return;
 
     ctx.drawImage(
       img,
@@ -48,5 +51,16 @@ export function createCursor(canvas, ctx) {
     );
   }
 
-  return { update, draw };
+  function getPosition() {
+    return {
+      x: currentX,
+      y: currentY
+    };
+  }
+
+  return {
+    update,
+    draw,
+    getPosition
+  };
 }

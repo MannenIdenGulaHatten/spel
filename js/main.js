@@ -29,7 +29,7 @@ window.addEventListener('resize', resize);
 // ---------------------------
 // Timer
 // ---------------------------
-let gameDuration = 5; // seconds
+let gameDuration = 30; // seconds
 let timeLeft = gameDuration;
 let gameRunning = false;
 let timerInterval;
