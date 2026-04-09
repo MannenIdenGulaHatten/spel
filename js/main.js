@@ -146,6 +146,9 @@ canvas.addEventListener('click', (e) => {
 
     console.log("Score:", score);
   }
+  if (score === leaderboard[index]) {
+    li.style.color = "yellow";
+  }
 });
 
 // ---------------------------
@@ -164,12 +167,15 @@ function drawScore() {
 // ---------------------------
 
 function endGame() {
-  console.log("END GAME CALLED"); // debugger
+  console.log("END GAME CALLED");
   gameRunning = false;
 
   clearInterval(timerInterval);
 
   finalScoreText.textContent = `Score: ${score}`;
+
+  saveScore(score);          // save
+  displayLeaderboard();      // then show
 
   endOverlay.style.display = "flex";
 
@@ -178,6 +184,43 @@ function endGame() {
   });
 
   document.exitPointerLock();
+}
+
+function saveScore(score) {
+  let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
+
+  leaderboard.push(score);
+
+  // sort highest first
+  leaderboard.sort((a, b) => b - a);
+
+  // show top 5
+  leaderboard = leaderboard.slice(0, 5);
+
+  localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+}
+
+//---------------------
+// save score
+//---------------------
+
+function displayLeaderboard() {
+  const list = document.getElementById("leaderboard");
+  const leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
+
+  list.innerHTML = "";
+
+  leaderboard.forEach((entry, index) => {
+    const li = document.createElement("li");
+    li.textContent = `${index + 1}. ${entry}`;
+
+    // highlight current score
+    if (entry === score) {
+      li.style.color = "yellow";
+    }
+
+    list.appendChild(li);
+  });
 }
 
 restartBtn.addEventListener("click", () => {
