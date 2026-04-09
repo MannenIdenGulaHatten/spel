@@ -44,22 +44,39 @@ button:hover {
   color: white;
 }
 
-#startOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: black;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 2rem;
-  cursor: pointer;
-  z-index: 1000;
-}
 
 #gameCanvas {
   display: block;
+}
+
+
+.startButton {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto auto;
+  gap: 15px;
+  justify-items: center;
+  align-items: center;
+}
+
+
+#startgame {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+
+#easyBtn {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+#mediumBtn {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+#hardBtn {
+  grid-column: 3;
+  grid-row: 2;
 }

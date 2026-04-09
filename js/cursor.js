@@ -1,6 +1,6 @@
 export function createCursor(canvas, ctx) {
   const radius = 16;
-  const lerpSpeed = 0.1; // smoother than 0.8
+  const lerpSpeed = 1; // smoother than 0.8
 
   // Logical mouse position (target)
   let mouseX = canvas.width / 2;
