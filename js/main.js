@@ -88,13 +88,16 @@ let score = 0;
 let correctClicks = 0;
 
 const difficulty = localStorage.getItem("difficulty") || "Easy";
+const iceMode = localStorage.getItem("iceMode") === "true";
+
 console.log("Loaded difficulty:", difficulty);
+console.log("Ice mode:", iceMode);
 
 // ---------------------------
 // Systems
 // ---------------------------
 const targets = createTargetSystem(canvas, ctx);
-const cursor = createCursor(canvas, ctx);
+const cursor = createCursor(canvas, ctx, { iceMode });
 
 // ---------------------------
 // Start game (overlay click)

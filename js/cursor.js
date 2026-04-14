@@ -1,6 +1,13 @@
-export function createCursor(canvas, ctx) {
+export function createCursor(canvas, ctx, options = {}) {
+  const iceMode = options.iceMode || false;
   const radius = 16;
-  const lerpSpeed = 1;
+  let lerpSpeed;
+
+  if (iceMode) {
+    lerpSpeed = 0.05; // slippery
+  } else {
+    lerpSpeed = 1; // normal
+  }
 
   // Logical mouse position (target)
   let mouseX = canvas.width / 2;
