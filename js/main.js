@@ -4,6 +4,8 @@ import { createTargetSystem } from './target.js';
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
+
+
 const finalScoreText = document.getElementById("finalScore");
 const restartBtn = document.getElementById("restartBtn");
 const menuBtn = document.getElementById("menuBtn");
