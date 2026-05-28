@@ -12,6 +12,8 @@ const menuBtn = document.getElementById("menuBtn");
 const overlay = document.getElementById("startOverlay");
 const endOverlay = document.getElementById("endOverlay");
 
+const difficulty = localStorage.getItem("difficulty") || "Easy";
+const iceMode = localStorage.getItem("iceMode") === "true";
 
 document.addEventListener("pointerlockchange", () => {
   console.log("Pointer locked to:", document.pointerLockElement);
@@ -31,29 +33,31 @@ window.addEventListener('resize', resize);
 // ---------------------------
 // Timer
 // ---------------------------
-let gameDuration = 30; // seconds
-let timeLeft = gameDuration;
-let gameRunning = false;
-let timerInterval;
+let timeLeft = 30;
 
-function startTimer() {
-  clearInterval(timerInterval);
+// Start timer with API
+async function startTimer() {
 
-  timeLeft = gameDuration; //
-
-  timerInterval = setInterval(() => {
-    timeLeft--;
-
-    if (timeLeft < 0) {
-      timeLeft = 0;
-    }
-
-    if (timeLeft === 0) {
-      clearInterval(timerInterval);
-      endGame();
-    }
-  }, 1000);
+  await fetch("http://localhost:3000/start-timer"); //port
 }
+
+// Update timer from API
+
+async function updateTimer() {
+
+  const response = await fetch(
+    `http://localhost:3000/timer?mode=${difficulty.toLowerCase()}`
+  );
+
+  const data = await response.json();
+
+  timeLeft = data.timeLeft;
+
+  if (timeLeft <= 0 && gameRunning) {
+    endGame();
+  }
+}
+
 
 
 function drawTimer() {
@@ -86,9 +90,9 @@ function lockPointer() {
 // ---------------------------
 let score = 0;
 let correctClicks = 0;
+let gameRunning = false;
+let timerInterval;
 
-const difficulty = localStorage.getItem("difficulty") || "Easy";
-const iceMode = localStorage.getItem("iceMode") === "true";
 
 console.log("Loaded difficulty:", difficulty);
 console.log("Ice mode:", iceMode);
@@ -120,7 +124,8 @@ function startGame() {
 
   targets.spawnBombs(bombCount);
 
-  startTimer();
+  startTimer(); // startar backend server super cool
+  timerInterval = setInterval(updateTimer, 1000); // hämtar the clock
 
   // viktigt tydligen
   canvas.requestPointerLock();
@@ -151,9 +156,6 @@ canvas.addEventListener('click', (e) => {
 
     console.log("Score:", score);
   }
-  if (score === leaderboard[index]) {
-    li.style.color = "yellow";
-  }
 });
 
 // ---------------------------
@@ -174,13 +176,12 @@ function drawScore() {
 function endGame() {
   console.log("END GAME CALLED");
   gameRunning = false;
-
   clearInterval(timerInterval);
-
   finalScoreText.textContent = `Score: ${score}`;
 
   saveScore(score);          // save
   displayLeaderboard();      // then show
+
 
   endOverlay.style.display = "flex";
 
