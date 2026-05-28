@@ -1,6 +1,7 @@
 console.log("SERVER VERSION 123 RUNNING");
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 
 const app = express();
 app.use(cors());
@@ -8,6 +9,8 @@ app.use(cors());
 let timeLeft = 30;
 let interval;
 
+
+app.use(express.static(path.join(__dirname, "js")));
 // START TIMER
 app.get("/timer", (req, res) => {
   const mode = req.query.mode;
