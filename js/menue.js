@@ -35,7 +35,7 @@ iceBtn.addEventListener("click", () => {
 // ----------------------
 easyBtn.addEventListener("click", () => setDifficulty("Easy", easyBtn));
 mediumBtn.addEventListener("click", () => setDifficulty("Medium", mediumBtn));
-hardBtn.addEventListener("click", () => setDifficulty("MEGA HARD", hardBtn));
+hardBtn.addEventListener("click", () => setDifficulty("MEGAHARD", hardBtn));
 
 // ----------------------
 // Start game
@@ -54,7 +54,7 @@ function loadSavedSettings() {
     // Difficulty UI
     if (savedDifficulty === "Easy") setDifficulty("Easy", easyBtn);
     if (savedDifficulty === "Medium") setDifficulty("Medium", mediumBtn);
-    if (savedDifficulty === "MEGA HARD") setDifficulty("MEGA HARD", hardBtn);
+    if (savedDifficulty === "MEGAHARD") setDifficulty("MEGAHARD", hardBtn);
     if (!savedDifficulty) setDifficulty("Easy", easyBtn);
 
     // Ice mode UI

@@ -12,7 +12,7 @@ const menuBtn = document.getElementById("menuBtn");
 const overlay = document.getElementById("startOverlay");
 const endOverlay = document.getElementById("endOverlay");
 
-const difficulty = localStorage.getItem("difficulty") || "Easy";
+const difficulty = localStorage.getItem("difficulty") || "easy";
 const iceMode = localStorage.getItem("iceMode") === "true";
 
 document.addEventListener("pointerlockchange", () => {
