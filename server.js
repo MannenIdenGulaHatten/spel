@@ -40,10 +40,10 @@ app.get("/timer", (req, res) => {
 });
 
 // GET TIMER
-/*app.get("/timer", (req, res) => {
+app.get("/timer", (req, res) => {
   res.json({ timeLeft });
 });
-*/
+
 
 const PORT = process.env.PORT || 3000;
 
