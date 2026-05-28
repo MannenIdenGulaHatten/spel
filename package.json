@@ -1,10 +1,10 @@
 {
   "name": "spel",
   "version": "1.0.0",
-  "description": "ett spel som man spelar\r spelet är en aimtrainer som aimlabs, målet går ut på att skjuta \"targets\" som är i olika storlekar och ger olika poäng beroende på storleken. det ska finnas en timer, men det har jag inte gjort än. har tagit stark inspiration ifrån gameOn FeverFairy.",
-  "main": "index.js",
+  "description": "ett spel som man spelar",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -14,10 +14,6 @@
   "author": "",
   "license": "ISC",
   "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/MannenIdenGulaHatten/spel/issues"
-  },
-  "homepage": "https://github.com/MannenIdenGulaHatten/spel#readme",
   "dependencies": {
     "cors": "^2.8.6",
     "express": "^5.2.1"
