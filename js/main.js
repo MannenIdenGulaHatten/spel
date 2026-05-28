@@ -39,7 +39,7 @@ window.addEventListener('resize', resize);
 // TIMER
 // ---------------------------
 async function startTimer() {
-  await fetch(`${API_URL}/start-timer?mode=${difficulty}`);
+  await fetch(`${API_URL}/timer?mode=${difficulty}`);
 }
 
 async function updateTimer() {
