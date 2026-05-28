@@ -8,7 +8,7 @@ let timeLeft = 30;
 let interval;
 
 // START TIMER
-app.get("/start-timer", (req, res) => {
+app.get("/timer", (req, res) => {
   const mode = req.query.mode;
 
   let duration = 30;
@@ -36,9 +36,10 @@ app.get("/start-timer", (req, res) => {
 });
 
 // GET TIMER
-app.get("/timer", (req, res) => {
+/*app.get("/timer", (req, res) => {
   res.json({ timeLeft });
 });
+*/
 
 const PORT = process.env.PORT || 3000;
 
