@@ -1,3 +1,4 @@
+console.log("SERVER VERSION 123 RUNNING");
 const express = require("express");
 const cors = require("cors");
 
