@@ -11,7 +11,7 @@ const menuBtn = document.getElementById("menuBtn");
 const overlay = document.getElementById("startOverlay");
 const endOverlay = document.getElementById("endOverlay");
 
-const API_URL = "https://spel-timo-1234324324.onrender.com";
+const API_URL = "https://webservice-timofucking-torsten.onrender.com";
 
 const difficulty = (localStorage.getItem("difficulty") || "easy").toLowerCase();
 const iceMode = localStorage.getItem("iceMode") === "true";
