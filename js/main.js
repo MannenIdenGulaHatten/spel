@@ -38,7 +38,7 @@ let timeLeft = 30;
 // Start timer with API
 async function startTimer() {
 
-  await fetch("http://localhost:3000/start-timer"); //port
+  await fetch("https://spel-timo-1234324324.onrender.com:3000/start-timer"); //port
 }
 
 // Update timer from API
@@ -46,7 +46,7 @@ async function startTimer() {
 async function updateTimer() {
 
   const response = await fetch(
-    `http://localhost:3000/timer?mode=${difficulty.toLowerCase()}`
+    `https://spel-timo-1234324324.onrender.com:3000/timer?mode=${difficulty.toLowerCase()}`
   );
 
   const data = await response.json();
