@@ -1,4 +1,4 @@
-app = "spel"
+app = "spel-torstenkorv"
 primary_region = "arn"
 
 [http_service]
