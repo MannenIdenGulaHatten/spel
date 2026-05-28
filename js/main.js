@@ -1,3 +1,4 @@
+/* global fetch */
 import { createCursor } from './cursor.js';
 import { createTargetSystem } from './target.js';
 
