@@ -4,23 +4,28 @@ import { createTargetSystem } from './target.js';
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-
-
 const finalScoreText = document.getElementById("finalScore");
 const restartBtn = document.getElementById("restartBtn");
 const menuBtn = document.getElementById("menuBtn");
 const overlay = document.getElementById("startOverlay");
 const endOverlay = document.getElementById("endOverlay");
 
-const difficulty = localStorage.getItem("difficulty") || "easy";
+const API_URL = "https://spel-timo-1234324324.onrender.com";
+
+const difficulty = (localStorage.getItem("difficulty") || "easy").toLowerCase();
 const iceMode = localStorage.getItem("iceMode") === "true";
 
-document.addEventListener("pointerlockchange", () => {
-  console.log("Pointer locked to:", document.pointerLockElement);
-}); //Debug
+let score = 0;
+let correctClicks = 0;
+let gameRunning = false;
+let timeLeft = 30;
+let timerInterval;
+
+const targets = createTargetSystem(canvas, ctx);
+const cursor = createCursor(canvas, ctx, { iceMode });
 
 // ---------------------------
-// Resize canvas
+// Resize
 // ---------------------------
 function resize() {
   canvas.width = window.innerWidth;
@@ -29,27 +34,16 @@ function resize() {
 resize();
 window.addEventListener('resize', resize);
 
-
 // ---------------------------
-// Timer
+// TIMER
 // ---------------------------
-let timeLeft = 30;
-
-// Start timer with API
 async function startTimer() {
-
-  await fetch("https://spel-timo-1234324324.onrender.com/timer"); //port
+  await fetch(`${API_URL}/start-timer?mode=${difficulty}`);
 }
 
-// Update timer from API
-
 async function updateTimer() {
-
-  const response = await fetch(
-    `https://spel-timo-1234324324.onrender.com/timer?mode=${difficulty.toLowerCase()}`
-  );
-
-  const data = await response.json();
+  const res = await fetch(`${API_URL}/timer`);
+  const data = await res.json();
 
   timeLeft = data.timeLeft;
 
@@ -58,157 +52,109 @@ async function updateTimer() {
   }
 }
 
-
-
-function drawTimer() {
-  ctx.save();
-  ctx.fillStyle = 'red';
-  ctx.font = '28px Arial';
-  ctx.textAlign = 'center';
-  ctx.fillText(`Time: ${timeLeft}`, canvas.width / 2, 30);
-  ctx.restore();
-}
-
 // ---------------------------
-// Fullscreen + pointer lock
-// ---------------------------
-function enterFullscreen() {
-  const elem = document.documentElement;
-  if (elem.requestFullscreen) {
-    elem.requestFullscreen();
-  }
-}
-
-function lockPointer() {
-  if (document.pointerLockElement === canvas) return;
-
-  canvas.requestPointerLock?.();
-}
-
-// ---------------------------
-// Score & difficulty
-// ---------------------------
-let score = 0;
-let correctClicks = 0;
-let gameRunning = false;
-let timerInterval;
-
-
-console.log("Loaded difficulty:", difficulty);
-console.log("Ice mode:", iceMode);
-
-// ---------------------------
-// Systems
-// ---------------------------
-const targets = createTargetSystem(canvas, ctx);
-const cursor = createCursor(canvas, ctx, { iceMode });
-
-// ---------------------------
-// Start game (overlay click)
+// GAME START
 // ---------------------------
 overlay.addEventListener("click", startGame, { once: true });
 
-
 function startGame() {
-  enterFullscreen();
-
   overlay.style.display = "none";
-
   gameRunning = true;
+
+  enterFullscreen();
+  canvas.requestPointerLock();
 
   targets.spawnTargets(5);
 
   let bombCount = 0;
-  if (difficulty === "Medium") bombCount = 1;
-  else if (difficulty === "MEGAHARD") bombCount = 2;
+  if (difficulty === "medium") bombCount = 1;
+  else if (difficulty === "megahard") bombCount = 2;
 
   targets.spawnBombs(bombCount);
 
-  startTimer(); // startar backend server super cool
-  timerInterval = setInterval(updateTimer, 1000); // hämtar the clock
+  startTimer();
+  timerInterval = setInterval(updateTimer, 1000);
 
-  // viktigt tydligen
-  canvas.requestPointerLock();
-
-  animate(); 
+  animate();
 }
 
 // ---------------------------
-// Click handling
+// FULLSCREEN
 // ---------------------------
-canvas.addEventListener('click', (e) => {
+function enterFullscreen() {
+  const elem = document.documentElement;
+  elem.requestFullscreen?.();
+}
+
+// ---------------------------
+// CLICK SYSTEM
+// ---------------------------
+canvas.addEventListener('click', () => {
   const pos = cursor.getPosition();
   const result = targets.handleClick(pos.x, pos.y);
 
-  if (result && result !== 0) {
-    score += result.points;
+  if (!result || result === 0) return;
 
-    if (result.type === "target") {
-      correctClicks++;
+  score += result.points;
 
-      targets.spawnTargets(1);
+  if (result.type === "target") {
+    correctClicks++;
+    targets.spawnTargets(1);
 
-      if (correctClicks >= 3) {
-        targets.respawnBombs();
-        correctClicks = 0;
-      }
+    if (correctClicks >= 3) {
+      targets.respawnBombs();
+      correctClicks = 0;
     }
-
-    console.log("Score:", score);
   }
 });
 
 // ---------------------------
-// Draw score
+// DRAW UI
 // ---------------------------
 function drawScore() {
-  ctx.save();
   ctx.fillStyle = 'green';
   ctx.font = '24px Arial';
   ctx.fillText(`Score: ${score}`, 20, 30);
-  ctx.restore();
+}
+
+function drawTimer() {
+  ctx.fillStyle = 'red';
+  ctx.font = '28px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText(`Time: ${timeLeft}`, canvas.width / 2, 30);
 }
 
 // ---------------------------
-// End game
+// END GAME
 // ---------------------------
-
 function endGame() {
-  console.log("END GAME CALLED");
   gameRunning = false;
+
   clearInterval(timerInterval);
+
   finalScoreText.textContent = `Score: ${score}`;
 
-  saveScore(score);          // save
-  displayLeaderboard();      // then show
-
+  saveScore(score);
+  displayLeaderboard();
 
   endOverlay.style.display = "flex";
+  requestAnimationFrame(() => endOverlay.classList.add("show"));
 
-  requestAnimationFrame(() => {
-    endOverlay.classList.add("show");
-  });
-
-  document.exitPointerLock();
+  document.exitPointerLock?.();
 }
 
+// ---------------------------
+// LEADERBOARD
+// ---------------------------
 function saveScore(score) {
   let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
 
   leaderboard.push(score);
-
-  // sort highest first
   leaderboard.sort((a, b) => b - a);
-
-  // show top 5
   leaderboard = leaderboard.slice(0, 5);
 
   localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
 }
-
-//---------------------
-// save score
-//---------------------
 
 function displayLeaderboard() {
   const list = document.getElementById("leaderboard");
@@ -216,12 +162,11 @@ function displayLeaderboard() {
 
   list.innerHTML = "";
 
-  leaderboard.forEach((entry, index) => {
+  leaderboard.forEach((scoreVal, i) => {
     const li = document.createElement("li");
-    li.textContent = `${index + 1}. ${entry}`;
+    li.textContent = `${i + 1}. ${scoreVal}`;
 
-    // highlight current score
-    if (entry === score) {
+    if (scoreVal === score) {
       li.style.color = "yellow";
     }
 
@@ -229,18 +174,20 @@ function displayLeaderboard() {
   });
 }
 
-restartBtn.addEventListener("click", () => {
-  location.reload();
-});
+// ---------------------------
+// BUTTONS
+// ---------------------------
+restartBtn.addEventListener("click", () => location.reload());
 
 menuBtn.addEventListener("click", () => {
   window.location.href = "index.html";
 });
 
 // ---------------------------
-// Game loop
+// GAME LOOP
 // ---------------------------
 function animate() {
+  if (!gameRunning) return;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 

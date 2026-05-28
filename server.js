@@ -5,11 +5,10 @@ const app = express();
 app.use(cors());
 
 let timeLeft = 30;
-let timerRunning = false;
 let interval;
 
-// Start timer
-app.get("/timer", (req, res) => {
+// START TIMER
+app.get("/start-timer", (req, res) => {
   const mode = req.query.mode;
 
   let duration = 30;
@@ -19,7 +18,6 @@ app.get("/timer", (req, res) => {
   if (mode === "hard") duration = 20;
 
   timeLeft = duration;
-  timerRunning = true;
 
   clearInterval(interval);
 
@@ -28,14 +26,16 @@ app.get("/timer", (req, res) => {
       timeLeft--;
     } else {
       clearInterval(interval);
-      timerRunning = false;
     }
   }, 1000);
 
-  res.json({ success: true, timeLeft });
+  res.json({
+    success: true,
+    timeLeft
+  });
 });
 
-// Get timer
+// GET TIMER
 app.get("/timer", (req, res) => {
   res.json({ timeLeft });
 });
