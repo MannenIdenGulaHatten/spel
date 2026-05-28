@@ -44,6 +44,8 @@ app.get("/timer", (req, res) => {
   res.json({ timeLeft });
 });
 
+console.log("testa log")
+
 
 const PORT = process.env.PORT || 3000;
 
