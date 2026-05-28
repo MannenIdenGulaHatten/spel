@@ -38,7 +38,7 @@ let timeLeft = 30;
 // Start timer with API
 async function startTimer() {
 
-  await fetch("https://spel-timo-1234324324.onrender.com/start-timer"); //port
+  await fetch("https://spel-timo-1234324324.onrender.com/timer"); //port
 }
 
 // Update timer from API
@@ -120,7 +120,7 @@ function startGame() {
 
   let bombCount = 0;
   if (difficulty === "Medium") bombCount = 1;
-  else if (difficulty === "MEGA HARD") bombCount = 2;
+  else if (difficulty === "MEGAHARD") bombCount = 2;
 
   targets.spawnBombs(bombCount);
 

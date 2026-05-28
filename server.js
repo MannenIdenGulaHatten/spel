@@ -9,7 +9,7 @@ let timerRunning = false;
 let interval;
 
 // Start timer
-app.get("/start-timer", (req, res) => {
+app.get("/timer", (req, res) => {
   const mode = req.query.mode;
 
   let duration = 30;
