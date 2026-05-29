@@ -22,10 +22,10 @@ app.get("/timer/start", (req, res) => {
 
   let duration = 30;
 
-  if (mode === "easy") duration = 40;
+  if (mode === "easy") duration = 30;
   if (mode === "medium") duration = 30;
-  if (mode === "hard") duration = 20;
-  if (mode === "megahard") duration = 10;
+  if (mode === "hard") duration = 30;
+  if (mode === "megahard") duration = 30;
 
   timeLeft = duration;
 
