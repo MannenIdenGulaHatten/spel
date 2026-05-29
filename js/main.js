@@ -11,7 +11,10 @@ const menuBtn = document.getElementById("menuBtn");
 const overlay = document.getElementById("startOverlay");
 const endOverlay = document.getElementById("endOverlay");
 
-const API_URL = "https://webservice-timofucking-torsten.onrender.com";
+const API_URL =
+  window.location.hostname === "localhost"
+    ? "http://localhost:3000"
+    : "https://webservice-timofucking-torsten.onrender.com";
 
 const difficulty = (localStorage.getItem("difficulty") || "easy").toLowerCase();
 const iceMode = localStorage.getItem("iceMode") === "true";
@@ -39,7 +42,7 @@ window.addEventListener('resize', resize);
 // TIMER
 // ---------------------------
 async function startTimer() {
-  await fetch(`${API_URL}/timer?mode=${difficulty}`);
+  await fetch(`${API_URL}/timer/start?mode=${difficulty}`);
 }
 
 async function updateTimer() {
@@ -181,7 +184,7 @@ function displayLeaderboard() {
 restartBtn.addEventListener("click", () => location.reload());
 
 menuBtn.addEventListener("click", () => {
-  window.location.href = "index.html";
+  window.location.href = "js/index.html";
 });
 
 // ---------------------------
